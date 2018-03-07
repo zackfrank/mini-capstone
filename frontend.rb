@@ -10,7 +10,7 @@ while true do
   input = gets.chomp
 
   if input == "1"
-    response = Unirest.get("http://localhost:3000/all_products")
+    response = Unirest.get("http://localhost:3000/all-products")
     page = response.body
 
     puts JSON.pretty_generate(page)
