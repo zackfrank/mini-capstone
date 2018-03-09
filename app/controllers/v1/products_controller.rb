@@ -1,5 +1,6 @@
 class V1::ProductsController < ApplicationController
-  def all_products
+  
+  def index
     products = Product.all
 
     products_array = products.map { |shirt| 
@@ -15,7 +16,7 @@ class V1::ProductsController < ApplicationController
     render json: products_array.as_json
   end
 
-  def product_by_id
+  def show
     id = params["id"].to_i
     product = Product.find_by("id": id)
     render json: {product: product}
