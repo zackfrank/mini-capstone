@@ -9,6 +9,7 @@ while true do
   puts "To view all products in a table, type [2]"
   puts "To view one product, type [3]"
   puts "To create new products, type [4]"
+  puts "To update a product, type [5]"
   puts "To quit, type 'q'"
   input = gets.chomp
 
@@ -38,6 +39,22 @@ while true do
     print "Description: "
     params[:description] = gets.chomp
     response = Unirest.post("http://localhost:3000/v1/products", parameters: params)
+    page = response.body
+    puts JSON.pretty_generate(page)
+  elsif input == "5"
+    print "Product id: "
+    id = gets.chomp
+    params = {}
+    print "Name: "
+    params[:name] = gets.chomp
+    print "Size: "
+    params[:size] = gets.chomp
+    print "Price: "
+    params[:price] = gets.chomp
+    print "Description: "
+    params[:description] = gets.chomp
+    params.delete_if { |_key, value| value.empty? }
+    response = Unirest.patch("http://localhost:3000/v1/products/#{id}", parameters: params)
     page = response.body
     puts JSON.pretty_generate(page)
   elsif input == 'q'

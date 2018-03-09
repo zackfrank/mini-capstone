@@ -33,4 +33,14 @@ class V1::ProductsController < ApplicationController
     render json: product.as_json
   end
 
+  def update
+    product = Product.find_by(id: params["id"])
+    product.name = params["name"] || product.name
+    product.size = params["size"] || product.size
+    product.price = params["price"] || product.price
+    product.description = params["description"] || product.description
+
+    render json: product.as_json
+  end
+
 end
