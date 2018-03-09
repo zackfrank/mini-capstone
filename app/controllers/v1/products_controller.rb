@@ -11,14 +11,26 @@ class V1::ProductsController < ApplicationController
       image_url: shirt.image_url,
       description: shirt.description
       }
-     }
-
+    }
     render json: products_array.as_json
   end
 
   def show
     id = params["id"].to_i
     product = Product.find_by("id": id)
-    render json: {product: product}
+    render json: product.as_json
   end
+
+  def create
+    product = Product.create(
+      name: params["name"], 
+      size: params["size"],
+      price: params["price"], 
+      # image_url: params["image_url"],
+      description: params["description"]
+      )
+
+    render json: product.as_json
+  end
+
 end
