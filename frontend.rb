@@ -5,11 +5,12 @@ system "clear"
 while true do 
   puts "Welcome to the T-Shirt Shop!"
   puts "Please choose an option below:"
-  puts "To view all products, type [1]"
-  puts "To view all products in a table, type [2]"
-  puts "To view one product, type [3]"
-  puts "To create new products, type [4]"
-  puts "To update a product, type [5]"
+  puts "[1] View all products"
+  puts "[2] View all products in a table"
+  puts "[3] View one product"
+  puts "[4] Create new products"
+  puts "[5] Update a product"
+  puts "[6] Delete a product"
   puts "To quit, type 'q'"
   input = gets.chomp
 
@@ -45,18 +46,34 @@ while true do
     print "Product id: "
     id = gets.chomp
     params = {}
-    print "Name: "
+    current_page = Unirest.get("http://localhost:3000/v1/products/#{id}").body
+    puts "Name: " + current_page["name"]
+    print "(Enter to skip) Change name to: "
     params[:name] = gets.chomp
-    print "Size: "
+    puts "Size: " + current_page["size"]
+    print "(Enter to skip) Change size to: "
     params[:size] = gets.chomp
-    print "Price: "
+    puts "Price: " + current_page["price"].to_s
+    print "(Enter to skip) Change price to: "
     params[:price] = gets.chomp
-    print "Description: "
+    puts "Description: " + current_page["description"]
+    print "(Enter to skip) Change description to: "
     params[:description] = gets.chomp
     params.delete_if { |_key, value| value.empty? }
     response = Unirest.patch("http://localhost:3000/v1/products/#{id}", parameters: params)
     page = response.body
     puts JSON.pretty_generate(page)
+  elsif input == "6"
+    print "Enter id:"
+    product_id = gets.chomp
+    body = Unirest.get("http://localhost:3000/v1/products/#{product_id}").body
+    puts JSON.pretty_generate(body)
+    print "Are you sure you want to delete this product? [Y/N]"
+    confirmation = gets.chomp
+    if confirmation == "Y" || confirmation == "y"
+      body = Unirest.delete("http://localhost:3000/v1/products/#{product_id}").body
+      puts body["message"]
+    end
   elsif input == 'q'
     break
   end
