@@ -3,21 +3,22 @@ class V1::ProductsController < ApplicationController
   def index
     products = Product.all
 
-    products_array = products.map { |shirt| 
-      {
-      name: shirt.name,
-      size: shirt.size,
-      price: shirt.price,
-      image_url: shirt.image_url,
-      description: shirt.description
-      }
-    }
-    render json: products_array.as_json
+    # products_array = products.map { |shirt| 
+    #   {
+    #   name: shirt.name,
+    #   size: shirt.size,
+    #   price: shirt.price,
+    #   image_url: shirt.image_url,
+    #   description: shirt.description
+    #   }
+    # }
+    # render json: products_array.as_json
+    render json: products.as_json
   end
 
   def show
     id = params["id"].to_i
-    product = Product.find_by("id": id)
+    product = Product.find_by(id: id)
     render json: product.as_json
   end
 
@@ -39,6 +40,8 @@ class V1::ProductsController < ApplicationController
     product.size = params["size"] || product.size
     product.price = params["price"] || product.price
     product.description = params["description"] || product.description
+
+    product.save
 
     render json: product.as_json
   end
