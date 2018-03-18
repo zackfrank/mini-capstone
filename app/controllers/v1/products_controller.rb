@@ -3,17 +3,22 @@ class V1::ProductsController < ApplicationController
   def index
     products = Product.all
 
-    # products_array = products.map { |shirt| 
-    #   {
-    #   name: shirt.name,
-    #   size: shirt.size,
-    #   price: shirt.price,
-    #   image_url: shirt.image_url,
-    #   description: shirt.description
-    #   }
-    # }
-    # render json: products_array.as_json
-    render json: products.as_json
+    order_by = params["order_by"]
+    products = products.order("#{order_by}")
+
+    search = params[:search]
+
+    if search
+      render json: products.where(
+        "name ILIKE ? 
+        OR size ILIKE ? 
+        OR description ILIKE ?", 
+        "%#{search}%", 
+        "%#{search}%", 
+        "%#{search}%").as_json
+    else
+      render json: products.as_json
+    end
   end
 
   def show
@@ -23,15 +28,20 @@ class V1::ProductsController < ApplicationController
   end
 
   def create
-    product = Product.create(
+    product = Product.new(
       name: params["name"], 
       size: params["size"],
       price: params["price"], 
-      # image_url: params["image_url"],
-      description: params["description"]
+      description: params["description"],
+      in_stock: params["in_stock"]
       )
 
-    render json: product.as_json
+    if product.save
+      render json: product.as_json
+    else
+      render json: {errors: product.errors.full_messages}, status: 422
+    end
+
   end
 
   def update
@@ -40,10 +50,15 @@ class V1::ProductsController < ApplicationController
     product.size = params["size"] || product.size
     product.price = params["price"] || product.price
     product.description = params["description"] || product.description
+    product.in_stock = params["in_stock"] || product.in_stock
+    product.supplier.name = params["supplier"] || product.supplier.name
 
-    product.save
+    if product.save
+      render json: product.as_json
+    else
+      render json: {errors: product.errors.full_messages}, status: 422
+    end
 
-    render json: product.as_json
   end
 
   def destroy

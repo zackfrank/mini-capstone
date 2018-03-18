@@ -8,14 +8,23 @@ while true do
   puts "[1] View all products"
   puts "[2] View all products in a table"
   puts "[3] View one product"
-  puts "[4] Create new products"
-  puts "[5] Update a product"
-  puts "[6] Delete a product"
+  puts "[4] Search products"
+  puts "[5] Create new products"
+  puts "[6] Update a product"
+  puts "[7] Change Stock"
+  puts "[8] Delete a product"
   puts "To quit, type 'q'"
   input = gets.chomp
 
   if input == "1" # View All Products
-    response = Unirest.get("http://localhost:3000/v1/products")
+    print "Order by [1]id or [2]price?: "
+    choice = gets.chomp
+    if choice == "1"
+      order_by = "id"
+    elsif choice == "2"
+      order_by = "price"
+    end
+    response = Unirest.get("http://localhost:3000/v1/products?order_by=#{order_by}")
     page = response.body
     puts JSON.pretty_generate(page)
     puts
@@ -64,7 +73,20 @@ while true do
     if gets.chomp == 'q'
       break
     end
-  elsif input == "4" # Create new product
+  elsif input == "4" # Search
+    while true
+      print "Enter Search Query: "
+      search = gets.chomp
+      response = Unirest.get("http://localhost:3000/v1/products?search=#{search}")
+      page = response.body
+      puts JSON.pretty_generate(page)
+      puts
+      print "[Enter] to Search again ([1] to Go to Main Menu): "
+      if gets.chomp == '1'
+        break
+      end
+    end
+  elsif input == "5" # Create new product
     params = {}
     print "Name: "
     params[:name] = gets.chomp
@@ -74,32 +96,109 @@ while true do
     params[:price] = gets.chomp
     print "Description: "
     params[:description] = gets.chomp
+    print "In Stock: "
+    params[:in_stock] = gets.chomp
     response = Unirest.post("http://localhost:3000/v1/products", parameters: params)
     page = response.body
-    puts JSON.pretty_generate(page)
+    if page["errors"] != nil
+      puts
+      puts "*****"
+      puts "There was an issue:"
+      puts "*****"
+      puts page["errors"]
+    else
+      puts JSON.pretty_generate(page)
+    end
     puts
-    print "[Enter] to Continue ('q' to Quit): "
+    print "[Any Key] to Continue ('q' to Quit): "
     if gets.chomp == 'q'
       break
     end
-  elsif input == "5" # Update product
+  elsif input == "6" # Update product
     print "Product id: "
     id = gets.chomp
     params = {}
     current_page = Unirest.get("http://localhost:3000/v1/products/#{id}").body
-    puts "Name: " + current_page["name"]
+    puts "Name: #{current_page["name"]}"
     print "(Enter to skip) Change name to: "
     params[:name] = gets.chomp
-    puts "Size: " + current_page["size"]
+    puts "Size: #{current_page["size"]}"
     print "(Enter to skip) Change size to: "
     params[:size] = gets.chomp
     puts "Price: " + current_page["price"].to_s
     print "(Enter to skip) Change price to: "
     params[:price] = gets.chomp
-    puts "Description: " + current_page["description"]
+    puts "Description: #{current_page["description"]}"
     print "(Enter to skip) Change description to: "
     params[:description] = gets.chomp
+    puts "In Stock: #{current_page["in_stock"]}"
+    print "(Enter to skip) Change in stock to: "
+    params[:in_stock] = gets.chomp
+    puts "Supplier: #{current_page["supplier"]["name"]}"
+    print "(Enter to skip) Change supplier name to: "
+    params[:in_stock] = gets.chomp
     params.delete_if { |_key, value| value.empty? }
+    response = Unirest.patch("http://localhost:3000/v1/products/#{id}", parameters: params)
+    page = response.body
+    if page["errors"] != nil
+      puts
+      puts "*****"
+      puts "There was an issue:"
+      puts "*****"
+      puts page["errors"]
+    else
+      puts JSON.pretty_generate(page)
+    end
+    puts
+    print "[Enter] to Continue ('q' to Quit): "
+    if gets.chomp == 'q'
+      break
+    end
+  elsif input == "7" # Update in-stock only
+    params = {}
+    print "Enter id: "
+    id = gets.chomp
+    body = Unirest.get("http://localhost:3000/v1/products/#{id}").body
+    if body["id"] != nil
+      if body["in_stock"] == nil
+        print "In Stock is Nil, change? [Y/N]: "
+        confirmation = gets.chomp
+        if confirmation == "Y" || confirmation == "y"
+          puts
+          print "[1] to change 'In Stock' to True, [2] to change 'In Stock' to False: "
+          choice = gets.chomp
+          if choice == "1"
+            params["in_stock"] = true
+          elsif choice == "2"
+            params["in_stock"] = false 
+          else 
+            puts "Invalid Choice [Any Key] to Start Over"
+            gets.chomp
+            break
+          end
+        end
+      elsif body["in_stock"] == false
+        print "In Stock is false, change to true? [Y/N]: "
+        confirmation = gets.chomp
+        if confirmation == "Y" || confirmation == "y"
+          params["in_stock"] = true
+        end
+      elsif body["in_stock"] == true
+        print "In Stock is true, change to false? [Y/N]: "
+        confirmation = gets.chomp
+        if confirmation == "Y" || confirmation == "y"
+          params["in_stock"] = false
+        end
+      end
+    else
+      print "Product does not exist [Any Key] to Continue, 'q' to Quit: "
+      input = gets.chomp
+      if input == 'q'
+        break
+      else
+        next 
+      end
+    end
     response = Unirest.patch("http://localhost:3000/v1/products/#{id}", parameters: params)
     page = response.body
     puts JSON.pretty_generate(page)
@@ -108,7 +207,7 @@ while true do
     if gets.chomp == 'q'
       break
     end
-  elsif input == "6" # Delete Product
+  elsif input == "8" # Delete Product
     print "Enter id: "
     product_id = gets.chomp
     body = Unirest.get("http://localhost:3000/v1/products/#{product_id}").body
