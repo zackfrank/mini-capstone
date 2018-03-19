@@ -51,7 +51,7 @@ class V1::ProductsController < ApplicationController
     product.price = params["price"] || product.price
     product.description = params["description"] || product.description
     product.in_stock = params["in_stock"] || product.in_stock
-    product.supplier.name = params["supplier"] || product.supplier.name
+    product.supplier_id = params["supplier_id"] || product.supplier_id
 
     if product.save
       render json: product.as_json

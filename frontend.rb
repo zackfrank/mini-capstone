@@ -11,8 +11,10 @@ while true do
   puts "[4] Search products"
   puts "[5] Create new products"
   puts "[6] Update a product"
-  puts "[7] Change Stock"
-  puts "[8] Delete a product"
+  puts "[7] Update an image"
+  puts "[8] Add Image"
+  puts "[9] Change Stock"
+  puts "[10] Delete a product"
   puts "To quit, type 'q'"
   input = gets.chomp
 
@@ -135,8 +137,8 @@ while true do
     print "(Enter to skip) Change in stock to: "
     params[:in_stock] = gets.chomp
     puts "Supplier: #{current_page["supplier"]["name"]}"
-    print "(Enter to skip) Change supplier name to: "
-    params[:in_stock] = gets.chomp
+    print "(Enter to skip) Change supplier [1]ZFRANK [2]MFrank: "
+    params[:supplier_id] = gets.chomp
     params.delete_if { |_key, value| value.empty? }
     response = Unirest.patch("http://localhost:3000/v1/products/#{id}", parameters: params)
     page = response.body
@@ -154,7 +156,34 @@ while true do
     if gets.chomp == 'q'
       break
     end
-  elsif input == "7" # Update in-stock only
+  elsif input == "7" # Update an image
+    params = {}
+    print "Image id: "
+    id = gets.chomp
+    body = Unirest.get("http://localhost:3000/v1/images/#{id}").body
+    puts "Title: #{body["title"]}"
+    print "(Enter to skip) Change title to: "
+    params[:title] = gets.chomp
+    puts "Description: #{body["description"]}"
+    print "(Enter to skip) Change description to: "
+    params[:description] = gets.chomp
+    puts "url: #{body["url"]}"
+    print "(Enter to skip) Change url to: "
+    params[:url] = gets.chomp
+    puts "Product id: #{body["product_id"]}"
+    print "(Enter to skip) Change product_id to: "
+    params[:product_id] = gets.chomp
+    params.delete_if { |_key, value| value.empty? }
+    response = Unirest.patch("http://localhost:3000/v1/images/#{id}", parameters: params)
+    body = response.body
+    puts JSON.pretty_generate(body)
+    puts
+    print "[Enter] to Continue ('q' to Quit): "
+    if gets.chomp == 'q'
+      break
+    end
+  elsif input == "8" # Add a photo
+  elsif input == "9" # Update in-stock only
     params = {}
     print "Enter id: "
     id = gets.chomp
@@ -207,7 +236,7 @@ while true do
     if gets.chomp == 'q'
       break
     end
-  elsif input == "8" # Delete Product
+  elsif input == "10" # Delete Product
     print "Enter id: "
     product_id = gets.chomp
     body = Unirest.get("http://localhost:3000/v1/products/#{product_id}").body

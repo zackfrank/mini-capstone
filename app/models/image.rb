@@ -1,5 +1,5 @@
 class Image < ApplicationRecord
-  validates :name, presence: true
+  validates :title, presence: true
   validates :url, presence: true
-  validates :descriptio, presence: true
+  validates :description, presence: true
 end
