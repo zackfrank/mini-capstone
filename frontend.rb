@@ -1,10 +1,13 @@
 require "unirest"
 require "tty-table"
+require "tty-prompt"
 
 while true do 
   system "clear"
   puts "Welcome to the T-Shirt Shop!"
   puts "Please choose an option below:"
+  puts
+  puts "[Enter] To Login"
   puts "[1] View all products"
   puts "[2] View all products in a table"
   puts "[3] View one product"
@@ -15,10 +18,44 @@ while true do
   puts "[8] Add Image"
   puts "[9] Change Stock"
   puts "[10] Delete a product"
+  puts "[11] Create a User"
+  puts "[logout] to Logout"
   puts "To quit, type 'q'"
+  puts
+  print "Entry: "
   input = gets.chomp
+  puts
 
-  if input == "1" # View All Products
+  if input == ""
+    prompt = TTY::Prompt.new
+    print "Please enter your email: "
+    email = gets.chomp
+    password = prompt.mask "Please enter password: "
+
+    response = Unirest.post(
+      "http://localhost:3000/user_token",
+      parameters: {
+        auth: {
+          email: email,
+          password: password
+        }
+      }
+    )
+
+    # Save the JSON web token from the response
+    jwt = response.body["jwt"]
+    # Include the jwt in the headers of any future web requests
+    Unirest.default_header("Authorization", "Bearer #{jwt}")
+    puts "Welcome! Your jwt is #{jwt}"
+    puts
+    print "[Enter] to Continue: "
+    gets.chomp
+  elsif input == "logout"
+    puts "You can login, but you can't logout"
+    puts 
+    print "[Enter] to Continue: "
+    gets.chomp
+  elsif input == "1" # View All Products
     print "Order by [1]id or [2]price?: "
     choice = gets.chomp
     if choice == "1"
@@ -249,5 +286,24 @@ while true do
     end
   elsif input == 'q'
     break
+  elsif input == "11" # Create a user
+    prompt = TTY::Prompt.new
+    params = {}
+    print "Enter first name: "
+    params[:first_name] = gets.chomp
+    print "Enter last name: "
+    params[:last_name] = gets.chomp
+    print "Enter email: "
+    params[:email] = gets.chomp
+    params[:password] = prompt.mask "Enter password: "
+    params[:password_confirmation] = prompt.mask "Enter password again: "
+    response = Unirest.post("http://localhost:3000/v1/users", parameters: params)
+    body = response.body
+    puts JSON.pretty_generate(body)
+    puts
+    print "[Enter] to Continue ('q' to Quit): "
+    if gets.chomp == 'q'
+      break
+    end
   end
 end
