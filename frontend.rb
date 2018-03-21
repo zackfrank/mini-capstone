@@ -8,6 +8,9 @@ while true do
   puts "Please choose an option below:"
   puts
   puts "[Enter] To Login"
+  puts "[Signup] Sign up"
+  puts "[Order] Order products"
+  puts "[See all] See all orders"
   puts "[1] View all products"
   puts "[2] View all products in a table"
   puts "[3] View one product"
@@ -18,7 +21,6 @@ while true do
   puts "[8] Add Image"
   puts "[9] Change Stock"
   puts "[10] Delete a product"
-  puts "[11] Create a User"
   puts "[logout] to Logout"
   puts "To quit, type 'q'"
   puts
@@ -50,10 +52,52 @@ while true do
     puts
     print "[Enter] to Continue: "
     gets.chomp
+  elsif input == "signup" or input == "Signup" or input == "sign up" # Create a user
+    prompt = TTY::Prompt.new
+    params = {}
+    print "Enter first name: "
+    params[:first_name] = gets.chomp
+    print "Enter last name: "
+    params[:last_name] = gets.chomp
+    print "Enter email: "
+    params[:email] = gets.chomp
+    params[:password] = prompt.mask "Enter password: "
+    params[:password_confirmation] = prompt.mask "Enter password again: "
+    response = Unirest.post("http://localhost:3000/v1/users", parameters: params)
+    body = response.body
+    puts JSON.pretty_generate(body)
+    puts
+    print "[Enter] to Continue ('q' to Quit): "
+    if gets.chomp == 'q'
+      break
+    end
   elsif input == "logout"
     puts "You can login, but you can't logout"
-    puts 
+    puts
+    gets.chomp
+    jwt = ''
+    Unirest.clear_default_headers()
+    puts "Just kidding. You're now logged out."
+    puts
     print "[Enter] to Continue: "
+    gets.chomp
+  elsif input == "order" or input == "Order"
+    params = {}
+    print "Product id of product you'd like to order: "
+    params["product_id"] = gets.chomp
+    print "Quantity: "
+    params["quantity"] = gets.chomp
+    response = Unirest.post("http://localhost:3000/v1/orders", parameters: params)
+    body = response.body
+    puts JSON.pretty_generate(body)
+    puts
+    print "[Enter] to continue"
+    gets.chomp
+  elsif input == "seeall" or input == "See all" or input == "see all" or input == "Seeall"
+    response = Unirest.get("http://localhost:3000/v1/orders")
+    body = response.body
+    puts JSON.pretty_generate(body)
+    print "[Enter] to continue: "
     gets.chomp
   elsif input == "1" # View All Products
     print "Order by [1]id or [2]price?: "
@@ -286,24 +330,5 @@ while true do
     end
   elsif input == 'q'
     break
-  elsif input == "11" # Create a user
-    prompt = TTY::Prompt.new
-    params = {}
-    print "Enter first name: "
-    params[:first_name] = gets.chomp
-    print "Enter last name: "
-    params[:last_name] = gets.chomp
-    print "Enter email: "
-    params[:email] = gets.chomp
-    params[:password] = prompt.mask "Enter password: "
-    params[:password_confirmation] = prompt.mask "Enter password again: "
-    response = Unirest.post("http://localhost:3000/v1/users", parameters: params)
-    body = response.body
-    puts JSON.pretty_generate(body)
-    puts
-    print "[Enter] to Continue ('q' to Quit): "
-    if gets.chomp == 'q'
-      break
-    end
   end
 end

@@ -3,6 +3,17 @@ class Product < ApplicationRecord
   validates :price, presence: true, numericality: {greater_than: 0}
   validates :description, length: {in: 10..500}
 
+# def supplier
+  #   Supplier.find_by(id: supplier_id)
+  # end
+  belongs_to :supplier
+
+  # def images
+  #   Image.where(product_id: id).map { |image| {description: image.description, url: image.url}}
+  # end
+  has_many :images
+  has_many :orders
+
   def is_discounted
     price <= 2
   end
@@ -23,17 +34,6 @@ class Product < ApplicationRecord
   def friendly_updated_at
     updated_at.strftime("%A, %B %e %l:%m %p")
   end
-
-  # def supplier
-  #   Supplier.find_by(id: supplier_id)
-  # end
-  belongs_to :supplier
-
-  # def images
-  #   Image.where(product_id: id).map { |image| {description: image.description, url: image.url}}
-  # end
-  has_many :images
-
 
   def as_json
     {
