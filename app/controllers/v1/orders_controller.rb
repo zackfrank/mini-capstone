@@ -13,24 +13,28 @@ class V1::OrdersController < ApplicationController
 
   def create
     if current_user
-      product_id = params[:product_id].to_i
-      subtotal = params[:quantity].to_i * Product.find_by(id: product_id).price
+      carted_products = current_user.carted_products.where("status = 'carted'")
+      ids_prices_qty = carted_products.map {|item| {product_id: item[:product_id], price: Product.find_by(id: item[:product_id]).price, quantity: item[:quantity]}}
+      subtotal = ids_prices_qty.map {|each| each[:price] * each[:quantity]}.reduce(:+)
       tax = subtotal * 0.09
       total = subtotal + tax
 
       order = Order.new(
         user_id: current_user.id,
-        product_id: product_id, 
-        quantity: params[:quantity],
         subtotal: subtotal,
         tax: tax,
         total: total
         )
 
       if order.save
+        carted_products.each do |cp|
+          cp[:status] = "purchased"
+          cp[:order_id] = order.id
+          cp.save
+        end
         render json: {
           message: "Order Succesful!",
-          order: order
+          order: order.as_json
         }
       else
         render json: {message: order.errors.full_messages}, status: :bad_request

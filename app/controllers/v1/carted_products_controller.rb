@@ -1,11 +1,17 @@
 class V1::CartedProductsController < ApplicationController
   def index
-    cartedproducts = current_user.carted_products.where("status = 'carted'")
-    quantities = cartedproducts.map {|product| product[:quantity] }
-    cartedproducts = cartedproducts.map {|product| Product.find_by(id: product[:product_id]) }
-    cartedproducts = cartedproducts.map {|product| "Name: #{product[:name]}, Quantity: #{quantities}" }
+    carted_items = current_user.carted_products.select {|item| item[:status] == "carted"}
+    ids_name_qty = carted_items.map do |item| 
+      {
+      cart_id: item[:id],
+      product_id: item[:product_id], 
+      name: Product.find_by(id: item[:product_id]).name, 
+      quantity: item[:quantity]
+      }
+    end
+    # names_and_quantities = id_and_quantity.map {|item| {name: Product.find_by(id: item[:product_id]).name, quantity: item[:quantity]} }
 
-    render json: cartedproducts.as_json
+    render json: ids_name_qty.as_json
   end
 
   def create
@@ -18,15 +24,26 @@ class V1::CartedProductsController < ApplicationController
         user_id: current_user.id,
         product_id: id,
         quantity: quantity,
-        status: "carted",
-        order_id: nil
+        status: "carted"
       }
     )
 
     if cartedproduct.save
       render json: cartedproduct.as_json
     else
-      render json: {message: "There were issues with your order. Please try again."}, status: :bad_request
+      render json: {message: "There were issues adding item(s) to your cart. Please try again."}, status: :bad_request
     end
   end
+
+  def destroy
+    cartedproduct = CartedProduct.find_by(id: params[:id])
+    cartedproduct[:status] = "removed"
+
+    if cartedproduct.save
+      render json: {message: "Product removed from cart."}
+    else
+      render json: {message: "There was an error. Item could not be removed from cart. Please call Jay Wengrow."}
+    end
+  end
+
 end

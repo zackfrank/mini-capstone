@@ -239,7 +239,6 @@ def add_items_to_cart
   end
   response = Unirest.post("http://localhost:3000/v1/cartedproducts", parameters: params)
   body = response.body
-  puts body
   puts "Here is what you added to your cart:"
   puts JSON.pretty_generate(body)
   puts
@@ -249,36 +248,51 @@ end
 
 def view_items_in_cart
   response = Unirest.get("http://localhost:3000/v1/cartedproducts")
-  body = response.body
+  @cart = response.body
+  if @cart == []
+    puts
+    puts "** You have nothing in your cart **"
+    puts
+    print "[Enter] to return to main menu: "
+    gets.chomp
+    return
+  end
   puts "Here are the items currently in your cart:"
-  puts JSON.pretty_generate(body)
+  puts JSON.pretty_generate(@cart)
   puts
+  print "[Enter] to continue: "
+  gets.chomp
+end
+
+def remove_item_from_cart
+  view_items_in_cart
+  print "**CART ID** of items to remove from cart: "
+  id = gets.chomp
+  if id.include? "," or id.include? " "
+    puts "Only enter one cart id at a time."
+    gets.chomp
+    return
+  end
+  response = Unirest.delete("http://localhost:3000/v1/cartedproducts/#{id}")
+  body = response.body
+  puts JSON.pretty_generate(body)
   print "[Enter] to continue: "
   gets.chomp
 end
 
 def order
   params = {}
+  view_items_in_cart
+  if @cart == []
+    return
+  end
   print "Are you sure you want to convert your cart to an order? [Y/N]: "
   confirmation = gets.chomp
   if confirmation == "Y" or confirmation == "y"
   else
     return
   end
-  # params["product_id"] = gets.chomp
-  # if params["product_id"] == ""
-  #   print "Please enter valid id, [Enter] to return to main menu: "
-  #   gets.chomp
-  #   return
-  # end
-  # print "Quantity: "
-  # params["quantity"] = gets.chomp
-  # if params["quantity"] == ""
-  #   print "Please enter valid id, [Enter] to return to main menu: "
-  #   gets.chomp
-  #   return
-  # end
-  # response = Unirest.post("http://localhost:3000/v1/orders", parameters: params)
+  response = Unirest.post("http://localhost:3000/v1/orders")
   body = response.body
   puts JSON.pretty_generate(body)
   puts
@@ -527,9 +541,10 @@ while true do
     puts "[4] Search products"
     puts "[5] View all products in a category"
     puts "[6] Add items to cart"
-    puts "[7] View cart"
-    puts "[8] Make an order"
-    puts "[9] See all past orders"
+    puts "[7] Remove items from cart"
+    puts "[8] View cart"
+    puts "[9] Make an order"
+    puts "[10] See all past orders"
     puts "[logout] to Logout"
     puts "To quit, type 'q'"
     print "Entry: "
@@ -548,10 +563,12 @@ while true do
     elsif entry == "6"
       add_items_to_cart
     elsif entry == "7"
-      view_items_in_cart
+      remove_item_from_cart
     elsif entry == "8"
-      order
+      view_items_in_cart
     elsif entry == "9"
+      order
+    elsif entry == "10"
       see_orders
     elsif entry == "logout" or entry == "Logout" or entry == "log out"
       logout
@@ -570,16 +587,19 @@ while true do
     puts "[2] View all products in a table"
     puts "[3] View one product"
     puts "[4] Search products"
-    puts "[5] Order products"
-    puts "[6] See all orders"
+    puts "[5] Add items to cart"
+    puts "[6] Remove items from cart"
+    puts "[7] View cart"
+    puts "[8] Order products"
+    puts "[9] See all orders"
     puts "==================="
     puts "Admin Options:"
-    puts "[7] Create a new product"
-    puts "[8] Update a product"
-    puts "[9] Update an image"
-    puts "[10] Add Image"
-    puts "[11] Change Stock"
-    puts "[12] Delete a product"
+    puts "[10] Create a new product"
+    puts "[11] Update a product"
+    puts "[12] Update an image"
+    puts "[13] Add Image"
+    puts "[14] Change Stock"
+    puts "[15] Delete a product"
     puts "======================  "
     puts "[logout] to Logout"
     puts "To quit, type 'q'"
@@ -597,20 +617,25 @@ while true do
     elsif entry == "4"
       search
     elsif entry == "5"
-      order
+      add_items_to_cart
     elsif entry == "6"
-      see_orders
     elsif entry == "7"
-      create_product
+      view_items_in_cart
     elsif entry == "8"
-      update_product
+      order
     elsif entry == "9"
-      update_image
+      see_orders
     elsif entry == "10"
-      add_image
+      create_product
     elsif entry == "11"
-      update_in_stock
+      update_product
     elsif entry == "12"
+      update_image
+    elsif entry == "13"
+      add_image
+    elsif entry == "14"
+      update_in_stock
+    elsif entry == "15"
       delete_product
     elsif entry == "logout"
       logout

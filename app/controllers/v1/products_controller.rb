@@ -65,11 +65,13 @@ class V1::ProductsController < ApplicationController
   def destroy
  
     product = Product.find_by(id: params["id"])
-    product.destroy
+    
 
-    render json: {message: "Product successfully deleted."}
-  else
-    render json: {}, status: :unauthorized
+    if product.destroy
+      render json: {message: "Product successfully deleted."}
+    else
+      render json: {}, status: :unauthorized
+    end
   end
 
 end
