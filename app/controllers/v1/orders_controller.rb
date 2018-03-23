@@ -1,4 +1,5 @@
 class V1::OrdersController < ApplicationController
+  before_action :authenticate_user
  
   def index
     if current_user
@@ -14,7 +15,7 @@ class V1::OrdersController < ApplicationController
     if current_user
       product_id = params[:product_id].to_i
       subtotal = params[:quantity].to_i * Product.find_by(id: product_id).price
-      tax = subtotal * 1.09
+      tax = subtotal * 0.09
       total = subtotal + tax
 
       order = Order.new(

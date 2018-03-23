@@ -13,6 +13,9 @@ class Product < ApplicationRecord
   # end
   has_many :images
   has_many :orders
+  has_many :category_products
+  has_many :categories, through: :category_products
+  has_many :carted_products
 
   def is_discounted
     price <= 2
@@ -49,7 +52,8 @@ class Product < ApplicationRecord
       images: images.map { |image| {description: image.description, url: image.url}},
       created_at: friendly_created_at, 
       updated_at: friendly_updated_at,
-      supplier: supplier.as_json
+      supplier: supplier.as_json,
+      categories: categories.map { |category| category.name }
     }
   end
 

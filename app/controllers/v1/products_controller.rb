@@ -1,5 +1,6 @@
 class V1::ProductsController < ApplicationController
-  
+  before_action :authenticate_admin, except: [:index, :show]
+
   def index
     products = Product.all
 
@@ -33,7 +34,8 @@ class V1::ProductsController < ApplicationController
       size: params["size"],
       price: params["price"], 
       description: params["description"],
-      in_stock: params["in_stock"]
+      in_stock: params["in_stock"],
+      supplier_id: params["supplier_id"]
       )
 
     if product.save
@@ -41,10 +43,10 @@ class V1::ProductsController < ApplicationController
     else
       render json: {errors: product.errors.full_messages}, status: 422
     end
-
   end
 
   def update
+  
     product = Product.find_by(id: params["id"])
     product.name = params["name"] || product.name
     product.size = params["size"] || product.size
@@ -58,14 +60,16 @@ class V1::ProductsController < ApplicationController
     else
       render json: {errors: product.errors.full_messages}, status: 422
     end
-
   end
 
   def destroy
+ 
     product = Product.find_by(id: params["id"])
     product.destroy
 
     render json: {message: "Product successfully deleted."}
+  else
+    render json: {}, status: :unauthorized
   end
 
 end

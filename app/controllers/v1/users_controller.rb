@@ -10,6 +10,10 @@ class V1::UsersController < ApplicationController
     render json: user.as_json
   end
 
+  def current
+    render json: current_user.as_json
+  end
+
   
   def create
     user = User.new(
