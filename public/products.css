@@ -1,0 +1,31 @@
+body {
+  font-family: "Special Elite", cursive;
+  background-image: url("tree_bark.png");
+}
+
+.navbar-brand {
+  font-family: "Cabin Sketch", cursive;
+  font-size: 3em;
+}
+
+.carousel.slide {
+  width: 50%;
+  display: inline-block;
+  float: left;
+}
+
+#productdescription {
+  display: inline-block;
+  float: right;
+}
+
+@media only screen and (max-width: 767px) {
+  .carousel.slide {
+    width: 100%;
+  }
+
+  #productdescription {
+    float: none;
+    width: 100%;
+  }
+}

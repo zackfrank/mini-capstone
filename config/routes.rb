@@ -18,14 +18,14 @@ Rails.application.routes.draw do
     get "/users/:id" => "users#show"
     get "/current_user" => "users#current"
 
+    get "/cartedproducts" => "carted_products#index"
+    post "/cartedproducts" => "carted_products#create"
+    delete "/cartedproducts/:id" => "carted_products#destroy"
+
     get "/orders" => "orders#index"
     post "/orders" => "orders#create"
 
     get "/categories" => "categories#index"
     get "/categories/:id" => "categories#show"
-
-    get "/cartedproducts" => "carted_products#index"
-    post "/cartedproducts" => "carted_products#create"
-    delete "/cartedproducts/:id" => "carted_products#destroy"
   end
 end

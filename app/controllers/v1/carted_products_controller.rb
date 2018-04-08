@@ -1,17 +1,10 @@
 class V1::CartedProductsController < ApplicationController
-  def index
-    carted_items = current_user.carted_products.select {|item| item[:status] == "carted"}
-    ids_name_qty = carted_items.map do |item| 
-      {
-      cart_id: item[:id],
-      product_id: item[:product_id], 
-      name: Product.find_by(id: item[:product_id]).name, 
-      quantity: item[:quantity]
-      }
-    end
-    # names_and_quantities = id_and_quantity.map {|item| {name: Product.find_by(id: item[:product_id]).name, quantity: item[:quantity]} }
+  before_action :authenticate_user
 
-    render json: ids_name_qty.as_json
+  def index
+    carted_items = current_user.carted_products.where(status: 'carted')
+    
+    render json: carted_items.as_json
   end
 
   def create
@@ -37,7 +30,7 @@ class V1::CartedProductsController < ApplicationController
 
   def destroy
     cartedproduct = CartedProduct.find_by(id: params[:id])
-    cartedproduct[:status] = "removed"
+    cartedproduct.status = "removed"
 
     if cartedproduct.save
       render json: {message: "Product removed from cart."}

@@ -6,7 +6,7 @@ require "tty-prompt"
 @admin = false
 
 # user options
-def login # hardcoded for Melanie right now
+def login
   # prompt = TTY::Prompt.new
   # print "Please enter your email: "
   # email = gets.chomp
@@ -18,7 +18,7 @@ def login # hardcoded for Melanie right now
       auth: {
         # email: email,
         # password: password
-        email: "melanie@email.com",
+        email: "zack@email.com",
         password: "password"
       }
     }
@@ -113,14 +113,19 @@ end
 
 def view_one
   print "Enter a product id: "
-  id = gets.chomp
-  if id == ""
+  id = gets.chomp 
+  if id == "" or id.to_i == 0
     print "Please enter valid id, [Enter] to return to main menu: "
     gets.chomp
     return
   end
   response = Unirest.get("http://localhost:3000/v1/products/#{id}")
   page = response.body
+  if page == "null"
+    print "Please enter valid id, [Enter] to return to main menu: "
+    gets.chomp
+    return
+  end
   page =
     { 
       id: page["id"],
@@ -152,6 +157,25 @@ def search
     search = gets.chomp
     response = Unirest.get("http://localhost:3000/v1/products?search=#{search}")
     page = response.body
+    page = page.map { |product|
+      { 
+        id: product["id"],
+        name: product["name"],
+        size: product["size"], 
+        price: product["price"],
+        is_discounted: product["is_discounted"],
+        tax: product["tax"], 
+        total: product["total"],
+        description: product["description"],
+        in_stock: product["in_stock"],
+        images_description_front: product["images"][0]["description"],
+        images_url_front: product["images"][0]["url"],
+        images_description_back: product["images"][1]["description"],
+        images_url_back: product["images"][1]["url"],
+        supplier: product["supplier"]["name"],
+        categories: product["categories"]
+      }
+    }
     puts JSON.pretty_generate(page)
     puts
     print "[Enter] to Search again ([1] to Go to Main Menu): "
@@ -167,22 +191,17 @@ def view_table
   table = TTY::Table.new [
     'Name', 
     'Size', 
-    'Price'
+    'Price',
+    'Description'
     ], 
-    [
-      [
-        page[0]["name"], 
-        page[0]["size"], 
-        page[0]["price"]
-      ], 
-      [
-        page[1]["name"], 
-        page[1]["size"], 
-        page[1]["price"]
-      ],
-      
-    ]
-
+      page.map {|product| 
+        [
+          product["name"], 
+          product["size"], 
+          product["price"], 
+          product["description"]
+        ]
+      }
   # table = TTY::Table.new ['header1','header2'], [['a1', 'a2'], ['b1', 'b2']]
   puts table.render(:unicode)
   puts
@@ -197,7 +216,7 @@ def view_products_in_category
   puts "[3] V-neck shirts"
   print "Entry: "
   entry = gets.chomp
-  if entry == "" or entry.to_i > 3
+  if entry == "" or entry.to_i > 3 or entry.to_i == 0
     print "Please enter valid entry, [Enter] to return to main menu: "
     gets.chomp
     return
@@ -215,27 +234,17 @@ def add_items_to_cart
   params = {}
   print "Enter product id: "
   params[:id] = gets.chomp
-  if params[:id] == ""
+  if params[:id] == "" or params[:id].to_i == 0
     print "Please enter a valid product id. [Enter] to return to main menu: "
     gets.chomp
-    return
-  elsif params[:id].to_i.is_a? Integer
-  else
-    print "Please enter a valid product id. [Enter] to return to main menu: "
-    gets.chomp
-    return    
+    return  
   end
   print "Enter quantity: "
   params[:quantity] = gets.chomp
-  if params[:quantity] == ""
+  if params[:quantity] == "" or params[:quantity].to_i == 0
     print "Please enter a valid product id. [Enter] to return to main menu: "
     gets.chomp
-    return
-  elsif params[:quantity].to_i.is_a? Integer
-  else
-    print "Please enter a valid product id. [Enter] to return to main menu: "
-    gets.chomp
-    return    
+    return  
   end
   response = Unirest.post("http://localhost:3000/v1/cartedproducts", parameters: params)
   body = response.body
@@ -266,10 +275,17 @@ end
 
 def remove_item_from_cart
   view_items_in_cart
+  if @cart == []
+    return
+  end
   print "**CART ID** of items to remove from cart: "
   id = gets.chomp
   if id.include? "," or id.include? " "
-    puts "Only enter one cart id at a time."
+    print "Only enter one cart id at a time."
+    gets.chomp
+    return
+  elsif id.to_i == 0
+    print "Not a valid cart id. [Enter] to return to main menu: "
     gets.chomp
     return
   end
@@ -543,7 +559,7 @@ while true do
     puts "[6] Add items to cart"
     puts "[7] Remove items from cart"
     puts "[8] View cart"
-    puts "[9] Make an order"
+    puts "[9] Order products in cart"
     puts "[10] See all past orders"
     puts "[logout] to Logout"
     puts "To quit, type 'q'"
@@ -580,6 +596,7 @@ while true do
   if @admin == true
     system "clear"
     puts "*** Welcome to the T-Shirt Shop Admin Portal, #{@name}! ***"
+    puts
     puts "Please choose an option below:"
     puts "============================="
     puts "Shopping Options:"
@@ -587,19 +604,20 @@ while true do
     puts "[2] View all products in a table"
     puts "[3] View one product"
     puts "[4] Search products"
-    puts "[5] Add items to cart"
-    puts "[6] Remove items from cart"
-    puts "[7] View cart"
-    puts "[8] Order products"
-    puts "[9] See all orders"
+    puts "[5] View all products in a category"
+    puts "[6] Add items to cart"
+    puts "[7] Remove items from cart"
+    puts "[8] View cart"
+    puts "[9] Order products in cart"
+    puts "[10] See all your past orders"
     puts "==================="
     puts "Admin Options:"
-    puts "[10] Create a new product"
-    puts "[11] Update a product"
-    puts "[12] Update an image"
-    puts "[13] Add Image"
-    puts "[14] Change Stock"
-    puts "[15] Delete a product"
+    puts "[11] Create a new product"
+    puts "[12] Update a product"
+    puts "[13] Update an image"
+    puts "[14] Add Image"
+    puts "[15] Change Stock"
+    puts "[16] Delete a product"
     puts "======================  "
     puts "[logout] to Logout"
     puts "To quit, type 'q'"
@@ -617,25 +635,28 @@ while true do
     elsif entry == "4"
       search
     elsif entry == "5"
-      add_items_to_cart
+      view_products_in_category
     elsif entry == "6"
+      add_items_to_cart
     elsif entry == "7"
-      view_items_in_cart
+      remove_item_from_cart
     elsif entry == "8"
-      order
+      view_items_in_cart
     elsif entry == "9"
-      see_orders
+      order
     elsif entry == "10"
-      create_product
+      see_orders
     elsif entry == "11"
-      update_product
+      create_product
     elsif entry == "12"
-      update_image
+      update_product
     elsif entry == "13"
-      add_image
+      update_image
     elsif entry == "14"
-      update_in_stock
+      add_image
     elsif entry == "15"
+      update_in_stock
+    elsif entry == "16"
       delete_product
     elsif entry == "logout"
       logout
