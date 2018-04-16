@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="products.css">
+    <link href="https://fonts.googleapis.com/css?family=Cabin+Sketch" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Special+Elite" rel="stylesheet">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="index.js" defer></script>
+
+
+    <title>TShirt Store Homepage</title>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Nav Bar -->
+      <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">The TShirt Store!</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">See All Products <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Categories
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Crewneck</a>
+                <a class="dropdown-item" href="#">V-neck</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">See All Shirts</a>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Add a new Product</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Update a Product</a>
+            </li>
+          </ul>
+          <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          </form>
+        </div>
+      </nav>
+          
+      <div class="card-deck" id="product-row">
+      </div>
+<!-- 
+      <div class="card-deck" id="product-row">  
+      </div>
+
+      <div class="card-deck" id="product-row">
+      </div>
+
+      <div class="card-deck" id="product-row">
+      </div> -->
+
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+
+</html>
+
+<template id="listed-product">
+  <div class="card">
+    <img class="card-img-top image" src="https://cdn-images.threadless.com/threadless-shop/products/8362/1272x920shirt_guys_01.jpg?w=1272&h=920" alt="Card image cap">
+    <div class="card-body">
+      <h5 class="card-title name">Shirt 1 - SM</h5>
+      <p class="card-text text">This shirt is our topseller!</p>
+      <a href="#" class="btn btn-primary">View Shirt</a>
+    </div>
+  </div>
+</template>

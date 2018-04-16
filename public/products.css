@@ -1,11 +1,10 @@
 body {
   font-family: "Special Elite", cursive;
-  background-image: url("tree_bark.png");
 }
 
 .navbar-brand {
   font-family: "Cabin Sketch", cursive;
-  font-size: 3em;
+  font-size: 2em;
 }
 
 .carousel.slide {
@@ -28,4 +27,12 @@ body {
     float: none;
     width: 100%;
   }
+}
+
+.total {
+  font-weight: 800;
+}
+
+#order-image {
+  width: 15%;
 }

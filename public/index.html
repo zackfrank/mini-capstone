@@ -1,89 +1,276 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<head>
+  <meta charset="UTF-8">
+  <title>My App</title>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="products.css">
-    <link href="https://fonts.googleapis.com/css?family=Cabin+Sketch" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Special+Elite" rel="stylesheet">
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="index.js" defer></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="products.css">
+  <link href="https://fonts.googleapis.com/css?family=Cabin+Sketch" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Special+Elite" rel="stylesheet">
 
-
-    <title>TShirt Store Homepage</title>
-  </head>
-  <body>
-    <div class="container">
-      <!-- Nav Bar -->
-      <nav class="navbar navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">The TShirt Store!</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">See All Products <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Categories
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Crewneck</a>
-                <a class="dropdown-item" href="#">V-neck</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">See All Shirts</a>
-              </div>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Add a new Product</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Update a Product</a>
-            </li>
-          </ul>
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
-        </div>
-      </nav>
-          
-      <div class="card-deck" id="product-row">
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.js"></script>
+  <script src="index.js" defer></script>
+</head>
+<body>
+  <div id="vue-app">
+    
+    <!-- Nav Bar -->
+    <nav class="navbar navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">The TShirt Store!</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/#/">See All Products</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Categories
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="#">Crewneck</a>
+              <a class="dropdown-item" href="#">V-neck</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">See All Shirts</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/#/products/new">Add a new Product</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/#/cart">Shopping Cart</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/#/orderhistory">Order History</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Update a Product</a>
+          </li> 
+          <li class="nav-item">
+            <a class="nav-link" href="/#/signup">Signup</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/#/login">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/#/logout">Logout</a>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
       </div>
-<!-- 
-      <div class="card-deck" id="product-row">  
-      </div>
+    </nav>
 
-      <div class="card-deck" id="product-row">
-      </div>
+    <router-view></router-view>
 
-      <div class="card-deck" id="product-row">
-      </div> -->
-
-    </div>
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  </body>
-
+  </div>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+<script type="text/javascript">
+var currentTime = new Date().getHours();
+if (7 <= currentTime && currentTime < 20) {
+  if (document.body) {
+    document.body.background = "farmland.jpg";
+  }
+} else {
+  if (document.body) {
+    document.body.background = "nightsky.jpg";
+  }
+}
+</script>
 </html>
 
-<template id="listed-product">
-  <div class="card">
-    <img class="card-img-top image" src="https://cdn-images.threadless.com/threadless-shop/products/8362/1272x920shirt_guys_01.jpg?w=1272&h=920" alt="Card image cap">
-    <div class="card-body">
-      <h5 class="card-title name">Shirt 1 - SM</h5>
-      <p class="card-text text">This shirt is our topseller!</p>
-      <a href="#" class="btn btn-primary">View Shirt</a>
+<template id="home-page">
+  <div class="vue-component container">
+    <h1>{{ message }}</h1>
+    <h4>{{ time() }}</h4>
+    <div class="card-deck" id="product-row listed-product" v-for="threeProducts in threeProductGroups">
+      <div class="card" v-for="product in threeProducts">
+        <img class="card-img-top image" v-bind:src="product.images[0] ? product.images[0]['url'] : ''" alt="Card image cap">
+        <div class="card-body">
+          <h5 class="card-title name">{{ product.name }}</h5>
+          <p class="card-text text">{{ product.description }}</p>
+          <a href="#" class="btn btn-primary">View Shirt</a>
+        </div>
+      </div>
     </div>
+
+  </div>
+</template>
+
+<template id="new-products-page">
+  <div class="vue-component">
+
+    <div class="container">
+      <h1>Create a New Product</h1>
+      <ul>
+        <li class="text-danger" v-for="error in errors">{{ error }}</li>
+      </ul>
+      <div class="form-group">
+        <label>Name: </label>
+        <input type="text" class="form-control" v-model="name">
+      </div>
+      <div class="form-group">
+        <label for="size">Size: </label>
+        <select class="form-group" name="size" v-model="size">
+          <option value="XS">XS</option>
+          <option value="Small">Small</option>
+          <option value="Medium">Medium</option>
+          <option value="Large">Large</option>
+          <option value="XL">XL</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Price: </label>
+        <input type="text" class="form-control" v-model="price">
+      </div>
+      <div class="form-group">
+        <label>Description: </label>
+        <input type="text" class="form-control" v-model="description">
+      </div>
+      <div class="form-group">
+        <label for="in-stock"></label>In Stock: </label>
+        <select class="form-group" name="in-stock" v-model="inStock">
+          <option value="True">True</option>
+          <option value="False">False</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="supplier-id"></label>Supplier ID: </label>
+        <select class="form-group" name="supplier-id" v-model="supplierID">
+          <option value="1">1</option>
+          <option value="2">2</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" v-on:click="submit()">Submit</button>
+    </div>
+
+  </div>
+</template>
+
+<template id="shopping-cart-page">
+  <div class="vue-component container">
+    <h1>{{ message }}</h1>
+    <h4>{{ time() }}</h4>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Item Name</th>
+          <th scope="col">Price</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in cart">
+          <td>{{item.name}}</td>
+          <td>${{item.price}}0</td>
+          <td>{{item.quantity}}</td>
+          <td>${{item.price * item.quantity}}</td>
+        </tr>
+        <tr class="total">
+          <td>TOTAL</td>
+          <td></td>
+          <td>{{total.quantities}}</td>
+          <td>${{total.total}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<template id="order-history-page">
+  <div class="vue-component container">
+    <h1>{{ message }}</h1>
+    <h4>{{ time() }}</h4>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Order Number</th>
+          <th scope="col">Items</th>
+          <th scope="col">Subotal</th>
+          <th scope="col">Tax</th>
+          <th scope="col">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in orders">
+          <td>{{item.order_id}}</td>
+          <td>
+            <div v-for="info in item.items">
+              <img v-if="info.img_url" v-bind:src="info.img_url" id="order-image">
+              Product: {{info.product}}, QTY: {{info.quantity}}
+            </div>
+          </td>
+          <td>${{item.subtotal}}</td>
+          <td>${{item.tax}}</td>
+          <td>${{item["total"]}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<template id="signup-page">
+  <div class="vue-component">
+    <div class="container">
+      <h1>Signup</h1>
+      <ul>
+        <li class="text-danger" v-for="error in errors">{{ error }}</li>
+      </ul>
+      <div class="form-group">
+        <label>First Name:</label> 
+        <input type="text" class="form-control" v-model="first_name">
+      </div><div class="form-group">
+        <label>Last Name:</label> 
+        <input type="text" class="form-control" v-model="last_name">
+      </div>
+      <div class="form-group">
+        <label>Email:</label>
+        <input type="email" class="form-control" v-model="email">
+      </div>
+      <div class="form-group">
+        <label>Password:</label>
+        <input type="password" class="form-control" v-model="password">
+      </div>
+      <div class="form-group">
+        <label>Password confirmation:</label>
+        <input type="password" class="form-control" v-model="passwordConfirmation">
+      </div>
+      <button class="btn btn-primary" v-on:click="submit()">Submit</button>
+    </div>
+  </div>
+</template>
+
+<template id="login-page">
+  <div class="vue-component">
+
+    <div class="container">
+      <h1>Login</h1>
+      <ul>
+        <li class="text-danger" v-for="error in errors">{{ error }}</li>
+      </ul>
+      <div class="form-group">
+        <label>Email:</label>
+        <input type="email" class="form-control" v-model="email">
+      </div>
+      <div class="form-group">
+        <label>Password:</label>
+        <input type="password" class="form-control" v-model="password">
+      </div>
+      <button class="btn btn-primary" v-on:click="submit()">Submit</button>
+    </div>
+
   </div>
 </template>

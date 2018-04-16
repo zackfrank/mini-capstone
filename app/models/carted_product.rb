@@ -8,10 +8,12 @@ class CartedProduct < ApplicationRecord
   end
 
   def as_json
+    product = Product.find_by(id: product_id)
     {  
       cart_id: id,
-      product_id: product_id, 
-      name: Product.find_by(id: product_id).name, 
+      product_id: product_id,
+      name: product.name, 
+      price: product.price, 
       quantity: quantity
     }
   end

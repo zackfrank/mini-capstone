@@ -20,4 +20,17 @@ class Order < ApplicationRecord
     self.total = total
   end
 
+  def as_json
+    carted_products = CartedProduct.where(order_id: self.id)
+    user = User.find_by(id: user_id)
+    {
+      order_id: id,
+      customer: user.first_name + " " + user.last_name,
+      items: carted_products.map {|cp| {product: Product.find_by(id: cp.product_id).name, img_url: Image.find_by(product_id: cp.product_id).url, quantity: cp.quantity } },
+      subtotal: subtotal,
+      tax: tax,
+      total: total
+    }
+  end
+
 end

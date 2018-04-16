@@ -432,6 +432,21 @@ def update_image
 end
 
 def add_image
+  params = {}
+  print "Enter product id: "
+  params[:product_id] = gets.chomp
+  print "Enter title (ie: Shirt 1 - MD: Image 1): "
+  params[:title] = gets.chomp
+  print "Enter description: "
+  params[:description] = gets.chomp
+  print "Enter url: "
+  params[:url] = gets.chomp
+  response = Unirest.post("http://localhost:3000/v1/images", parameters: params)
+  body = response.body
+  puts JSON.pretty_generate(body)
+  puts
+  print "[Enter] to Continue: "
+  gets.chomp
 end
 
 def update_in_stock

@@ -39,6 +39,11 @@ class V1::ProductsController < ApplicationController
       )
 
     if product.save
+      image = Image.new(
+        url: "http://allpicts.in/wp-content/uploads/2017/02/blank-tshirt-template-front-back-side-1024x576.jpg",
+        product_id: product.id
+      )
+      image.save
       render json: product.as_json
     else
       render json: {errors: product.errors.full_messages}, status: 422
